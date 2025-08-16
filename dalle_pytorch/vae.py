@@ -13,7 +13,7 @@ from math import sqrt, log
 from packaging import version
 
 from omegaconf import OmegaConf
-from taming.models.vqgan import VQModel, GumbelVQ
+# deferred import of taming models; see VQGanVAE
 import importlib
 
 import torch
@@ -160,6 +160,14 @@ def instantiate_from_config(config):
 class VQGanVAE(nn.Module):
     def __init__(self, vqgan_model_path=None, vqgan_config_path=None):
         super().__init__()
+
+        # Import taming lazily so the rest of the lib works without it
+        global GumbelVQ
+        try:
+            from taming.models.vqgan import VQModel, GumbelVQ as _GumbelVQ
+            GumbelVQ = _GumbelVQ
+        except Exception as e:
+            raise ImportError("taming-transformers is required for VQGanVAE. Install taming-transformers-rom1504.") from e
 
         if vqgan_model_path is None:
             model_filename = 'vqgan.1024.model.ckpt'

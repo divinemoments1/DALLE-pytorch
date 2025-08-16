@@ -33,7 +33,7 @@ setup(
     'torchvision',
     'transformers',
     'tqdm',
-    'youtokentome',
+    # 'youtokentome',  # optional; install if using YttmTokenizer
     'WebDataset'
   ],
   classifiers=[

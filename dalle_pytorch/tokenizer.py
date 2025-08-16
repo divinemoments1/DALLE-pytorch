@@ -3,7 +3,10 @@
 
 import torch
 
-import youtokentome as yttm
+try:
+    import youtokentome as yttm
+except Exception:
+    yttm = None
 from tokenizers import Tokenizer
 from tokenizers.processors import ByteLevel
 from transformers import BertTokenizer
@@ -231,9 +234,11 @@ class ChineseTokenizer:
 
 class YttmTokenizer:
     def __init__(self, bpe_path = None):
+        if yttm is None:
+            raise ImportError("youtokentome is not installed. Please install it or use HugTokenizer.")
         bpe_path = Path(bpe_path)
         assert bpe_path.exists(), f'BPE json path {str(bpe_path)} does not exist'
-
+        
         tokenizer = yttm.BPE(model = str(bpe_path))
         self.tokenizer = tokenizer
         self.vocab_size = tokenizer.vocab_size()
