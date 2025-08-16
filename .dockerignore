@@ -1,0 +1,27 @@
+# VCS
+.git
+.gitignore
+
+# Python caches
+__pycache__
+*.pyc
+*.pyo
+*.pyd
+*.egg-info
+.eggs
+
+# Data and outputs
+outputs
+/data
+
+# Notebooks and examples
+examples
+*.ipynb
+
+# Build artifacts
+build
+dist
+*.whl
+
+# OS files
+.DS_Store

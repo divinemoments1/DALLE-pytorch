@@ -1,0 +1,36 @@
+services:
+  api:
+    build:
+      context: .
+      dockerfile: docker/api.Dockerfile
+      args:
+        PYTORCH_IMAGE: pytorch/pytorch:2.3.1-cuda11.8-cudnn8-runtime
+    image: dalle-api:local
+    ports:
+      - "8000:8000"
+    environment:
+      # Provide your checkpoint path within the container (bind mount below)
+      - DALLE_WEIGHTS=/data/checkpoints/dalle.pt
+      # Optional VAE if using taming transformer
+      # - TAMING=true
+      # - VQGAN_MODEL_PATH=/data/checkpoints/vqgan.ckpt
+      # - VQGAN_CONFIG_PATH=/data/checkpoints/vqgan.yaml
+      # Tokenizer options (optional)
+      # - BPE_PATH=/data/tokenizer/model.bpe
+      # - BPE_KIND=yttm
+      # - CHINESE=false
+      - OUTPUTS_DIR=/data/outputs
+    volumes:
+      - type: bind
+        source: ./data
+        target: /data
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - capabilities: [gpu]
+    # For local docker engine with --gpus all, uncomment:
+    # runtime: nvidia
+    # Alternatively for compose v3 on local:
+    # deploy: { }
+    # command: ["uvicorn", "app.server:app", "--host", "0.0.0.0", "--port", "8000"]
